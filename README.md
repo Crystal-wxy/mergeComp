@@ -51,7 +51,7 @@ To use MergeComp via Docker, just pull the latest Horovod image:
 ```shell script
 docker pull horovod/horovod:0.20.0-tf2.3.0-torch1.6.0-mxnet1.6.0.post0-py3.7-cuda10.1
 
-sudo docker run -it --privileged -v ~/mergeComp:/home --net host --gpus all imageID
+sudo docker run -it --privileged --net host --gpus all imageID
 ```
 
 ### Download mergeComp
@@ -134,7 +134,7 @@ MergeComp can support following configurations and we are extending it for more 
 Basic benchmark is provided in `compress_benchmark.py`. 
 - For example, we can use the following command to run the benchmark on 4 GPUs, with compression algorithm as efsignsgd, communication primitive as allgather, memory as residual.
 ```shell script
-# run  mergeComp
+# run mergeComp
 horovodrun -np 4 python compress_benchmark.py --compress --compressor efsignsgd --comm allgather --memory residual --fusion-num 1 --model=resnet50
 
 # run mergeComp with two partitions
@@ -187,5 +187,8 @@ All experiments are conducted on a server equipped with 8 GPUs (NVIDIA Tesla V10
 
 We compare mergeComp against FP32 (baseline) and layer-wise compression. Our evaluations show that MergeComp can improve the scalability of distributed training by more than 200% without losing accuracy for representative DNN models. It can even achieve scalability up to 99% over high-speed networks.
 
+The performance of mergeComp for ResNet50 on CIFAR10:
 ![resnet50_speed](https://github.com/zhuangwang93/fast_compression/blob/mergeComp/data/resnet50_results.png)
+
+The performance of mergeComp for ResNet101 on ImageNet:
 ![resnet101_speed](https://github.com/zhuangwang93/fast_compression/blob/mergeComp/data/resnet101_results.png)
