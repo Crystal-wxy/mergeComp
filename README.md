@@ -101,6 +101,9 @@ HOROVOD_WITH_PYTORCH=1 HOROVOD_GPU_OPERATIONS=NCCL HOROVOD_NCCL_HOME=~/nccl/buil
 
 # Check Horovod
 horovodrun --check-build
+
+# install requirements
+pip install -r requirements.txt
 ```
 
 ### Potential isssus & solutions
@@ -120,7 +123,7 @@ MergeComp can support following configurations and we are extending it for more 
 
 | Configurations | Options                                                                            |
 | -------------- | ---------------------------------------------------------------------------------- |
-| Communicator   | Allreduce, Allgather, PS                                                           |
+| Communicator   | Allreduce, Allgather                                                           |
 | Compressors    | FP32, FP16, DGC, Top-k, Rand-k, QSGD, EFSignSGD, SignSGD, TernGrad, OneBit, SigNUM |
 | Memory         | Residual, DGC, None                                                                |
 
@@ -130,9 +133,19 @@ MergeComp can support following configurations and we are extending it for more 
 
 Basic benchmark is provided in `compress_benchmark.py`. 
 - For example, we can use the following command to run the benchmark on 4 GPUs, with compression algorithm as efsignsgd, communication primitive as allgather, memory as residual.
- ```shell script
- horovodrun -np 4 python compress_benchmark.py --compress --compressor efsignsgd --comm allgather --memory residual --fusion-num 1 --model=resnet50
-  ```
+```shell script
+# run  mergeComp
+horovodrun -np 4 python compress_benchmark.py --compress --compressor efsignsgd --comm allgather --memory residual --fusion-num 1 --model=resnet50
+
+# run mergeComp with two partitions
+horovodrun -np 4 python compress_benchmark.py --compress --compressor efsignsgd --comm allgather --memory residual --fusion-num 2 --model=resnet50
+
+# run baseline without compression
+horovodrun -np 4 python compress_benchmark.py --model=resnet50
+
+# run compression algorithms with layer-wise compression
+horovodrun -np 4 python compress_benchmark.py --compress --compressor efsignsgd --comm allgather --memory residual --fusion-num 0 --model=resnet50
+```
 - fusion-num specifies the number of partition groups. --fusion-num 0 is the layer-wise compression.
 
 ### Standard benchmarks
@@ -176,4 +189,3 @@ We compare mergeComp against FP32 (baseline) and layer-wise compression. Our eva
 
 ![resnet50_speed](https://github.com/zhuangwang93/fast_compression/blob/mergeComp/data/resnet50_results.png)
 ![resnet101_speed](https://github.com/zhuangwang93/fast_compression/blob/mergeComp/data/resnet101_results.png)
-
