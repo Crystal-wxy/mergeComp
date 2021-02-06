@@ -75,11 +75,12 @@ sudo make all install
 ```
 
 ### Conda 
-If you want to create a new conda environment for mergeComp, please follow the following steps:
- ```shell script
-conda create -n mergeComp python=3.7
+If you want to create a new conda environment for mergeComp on PCIe or NVLink, please follow the following steps:
+```shell script
+# mergeComp on PCIe 
+conda create -n mergeComp_pcie python=3.7
 
-conda activate mergeComp
+conda activate mergeComp_pcie
 
 # PyTorch install
 conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch -y
@@ -87,6 +88,18 @@ conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch -y
 # Horovod + MPI install
 HOROVOD_WITH_PYTORCH=1 pip install --no-cache-dir horovod
 
+# Check Horovod
+horovodrun --check-build
+
+# install requirements
+pip install -r requirements.txt
+```
+
+```shell script
+# mergeComp on NVLink
+conda create -n mergeComp_nvlink python=3.7
+
+conda activate mergeComp_nvlink
 # NCCL install
 cd ~
 git clone https://github.com/NVIDIA/nccl.git
